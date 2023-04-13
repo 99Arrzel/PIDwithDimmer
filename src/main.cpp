@@ -15,6 +15,13 @@ float heater = 0.0; // Heater is a percentage of 8192 in 0 to 1
 float cooler = 0.0; // Cooler is a percentage of 255 in 0 to 1
 
 /* ============== */
+#define DHTPIN 21
+#define DHTTYPE DHT11
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
+#include <DHT_U.h>
+DHT_Unified dht(DHTPIN, DHTTYPE);
+
 /* Termocuple */
 int thermoDO = 19;
 int thermoCS = 23;
@@ -148,6 +155,7 @@ void setup()
   pinMode(TACH_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(TACH_PIN), isrTachometer, FALLING);
   /* ====== */
+  dht.begin();
 }
 
 void loop()
@@ -192,5 +200,15 @@ void loop()
       "|D_term:" + String(derivative) +
       "|Override_status:" + String(override) +
       "|Actualtemp:" + String(readedTemp));
+  sensors_event_t event;
+  dht.temperature().getEvent(&event);
+  if (isnan(event.temperature))
+  {
+    webSocket.broadcastTXT("Error reading temperature DHT!");
+  }
+  else
+  {
+    webSocket.broadcastTXT("DHT:" + String(event.temperature));
+  }
   delay(250);
 }
