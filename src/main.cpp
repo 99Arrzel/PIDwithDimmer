@@ -161,23 +161,36 @@ void loop()
   {
     controllerTemperature(setpoint, readedTemp, heater, cooler);
   }
+
   fadeLevel = round(8192 * heater);
-  ledcWrite(PWM_CHANNEL, round(255 * cooler));
+
+  if (cooler > 0.35 && cooler > 0)
+  {
+    ledcWrite(PWM_CHANNEL, round(cooler * 255));
+  }
+  else if (cooler < 0.35 && cooler > 0)
+  {
+    ledcWrite(PWM_CHANNEL, round(0.35 * 255));
+  }
+  else
+  {
+    ledcWrite(PWM_CHANNEL, 0);
+  }
 
   webSocket.broadcastTXT(
-      "SetPoint:" + String(setpoint) +
+      "Setpoint:" + String(setpoint) +
       "|Offset:" + String(offset) +
       "|Cooler:" + String(cooler) +
       "|Heater:" + String(heater) +
       "|Kp:" + String(kp) +
       "|Ki:" + String(ki) +
       "|Kd:" + String(kd) +
-      "|I_Limit:" + String(maxIntegral) +
+      "|I_limit:" + String(maxIntegral) +
       "|Error:" + String(error) +
       "|P_term:" + String(error) +
-      "|I_Term:" + String(integral) +
-      "|D_Term:" + String(derivative) +
-      "|Override_Status:" + String(override) +
-      "|ActualTemp:" + String(readedTemp));
+      "|I_term:" + String(integral) +
+      "|D_term:" + String(derivative) +
+      "|Override_status:" + String(override) +
+      "|Actualtemp:" + String(readedTemp));
   delay(250);
 }

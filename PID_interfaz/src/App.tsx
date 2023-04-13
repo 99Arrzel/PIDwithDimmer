@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { InputSwitch } from 'primereact/inputswitch';
 import { InputNumber } from 'primereact/inputnumber';
 import Plot from 'react-plotly.js';
-function throttle<T extends (...args: any[]) => any> (func: T, interval: number): T {
+function throttle<T extends (...args: any[]) => any>(func: T, interval: number): T {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   const throttledFunc = function (this: any, ...args: any[]) {
@@ -17,12 +17,12 @@ function throttle<T extends (...args: any[]) => any> (func: T, interval: number)
 
   return throttledFunc as T;
 }
-function webSocketConnection (url: string) {
+function webSocketConnection(url: string) {
   const ws = new WebSocket(url);
   return ws;
 }
 
-function App () {
+function App() {
 
 
 
@@ -72,7 +72,6 @@ function App () {
           const [key, value] = element.split(":");
           switch (key) {
             case "Setpoint":
-
               setSetPoint(Number(value));
               break;
             case "Offset":
@@ -85,7 +84,7 @@ function App () {
 
               setHeater(Number(value));
               break;
-            case "Override_Status":
+            case "Override_status":
               setOverrideStatus(Number(value));
               break;
             case "Kp":
@@ -97,7 +96,7 @@ function App () {
             case "Kd":
               setKd(Number(value));
               break;
-            case "I_Limit":
+            case "I_limit":
               setILimit(Number(value));
               break;
             case "Error":
@@ -112,7 +111,7 @@ function App () {
             case "D_term":
               setDTerm(Number(value));
               break;
-            case "ActualTemp":
+            case "Actualtemp":
               setActualTemp(Number(value));
               setData((prev) => {
                 const newData = {
@@ -159,12 +158,12 @@ function App () {
               </div>
               <div className="flex-auto">
                 <label htmlFor="heater" className="block ">Heater</label>
-                <InputNumber disabled={overrideStatus === 1} inputId="heater" value={heater * 100} onValueChange={(e) => ws?.send("htr:" + (e.value as number / 100))} prefix='%' min={0} max={100} minFractionDigits={2} maxFractionDigits={2} />
+                <InputNumber disabled={overrideStatus === 0} inputId="heater" value={heater * 100} onValueChange={(e) => ws?.send("htr:" + (e.value as number / 100))} prefix='%' min={0} max={100} minFractionDigits={2} maxFractionDigits={2} />
               </div>
 
               <div className="flex-auto">
                 <label htmlFor="cooler" className="block ">Cooler</label>
-                <InputNumber disabled={overrideStatus === 1} inputId="cooler" value={cooler * 100} onValueChange={(e) => ws?.send("clr:" + (e.value as number / 100))} prefix='%' min={0} max={100} minFractionDigits={2} maxFractionDigits={2} />
+                <InputNumber disabled={overrideStatus === 0} inputId="cooler" value={cooler * 100} onValueChange={(e) => ws?.send("clr:" + (e.value as number / 100))} prefix='%' min={0} max={100} minFractionDigits={2} maxFractionDigits={2} />
               </div>
             </div>
           </div>
@@ -188,15 +187,15 @@ function App () {
               <h2 className='text-center'>PID Consts </h2>
               <div className='grid grid-cols-2'>
                 <div className="flex-auto">
-                  <label htmlFor="kp" className="block ">Kp {`- AV: ${pTerm}`}</label>
+                  <label htmlFor="kp" className="block ">Kp {`- Actual Value of P: ${pTerm}`}</label>
                   <InputNumber inputId="kp" value={kp} onValueChange={(e) => ws?.send("kpv:" + (e.value as number))} minFractionDigits={2} maxFractionDigits={2} />
                 </div>
                 <div className="flex-auto">
-                  <label htmlFor="ki" className="block ">Ki {`- AV: ${iTerm}`}</label>
+                  <label htmlFor="ki" className="block ">Ki {`- Actual Value of I: ${iTerm}`}</label>
                   <InputNumber inputId="ki" value={ki} onValueChange={(e) => ws?.send("kiv:" + (e.value as number))} minFractionDigits={2} maxFractionDigits={2} />
                 </div>
                 <div className="flex-auto">
-                  <label htmlFor="kd" className="block ">Kd {`- AV: ${dTerm}`}</label>
+                  <label htmlFor="kd" className="block ">Kd {`- Actual Value of D: ${dTerm}`}</label>
                   <InputNumber inputId="kd" value={kd} onValueChange={(e) => ws?.send("kdv:" + (e.value as number))} minFractionDigits={2} maxFractionDigits={2} />
                 </div>
                 <div className="flex-auto">
